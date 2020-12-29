@@ -14,6 +14,7 @@ This repository contains code for implementing Li-Fi communication using Arduino
 ### Receiver:
 - Arduion Uno/Nano/Mini/Micro/Leonardo
 - Solar Panel
+- OLED DISPLAY (optional - if you want to display data on screen)
 
 
 
