@@ -1,13 +1,10 @@
-#include <Wire.h>
-#include <MPU6050.h>
+// This code belongs to Navneet Kumar, ECE, PEC CHANDIGARH
 
 #define TRANSMIT_LED 4
 #define SAMPLING_TIME 20
 
-MPU6050 mpu;
-int16_t ax, ay, az, gx, gy, gz;
 
-char* text = "ON";
+char* text = "ON";                        // text that you want to send
 unsigned int start = 0;
 unsigned int current = 0;
 bool laser_state = false;
@@ -16,81 +13,19 @@ int bytes_counter = 20;
 int total_bytes;
 int second = 0;
 
-
-
-int angleToDistance(int a)
-{
-  if (a < -80)
-  {
-    return -40;
-  }
-  else if (a < -65) {
-    return -20;
-  }
-  else if (a < -50) {
-    return -10;
-  }
-  else if (a < -15) {
-    return -5;
-  }
-  else if (a < -5) {
-    return -1;
-  }
-  else if (a > 80) {
-    return 40;
-  }
-  else if (a > 65) {
-    return 20;
-  }
-  else if (a > 15) {
-    return 10;
-  }
-  else if (a > 5) {
-    return 1;
-  }
-}
-
 void setup() 
 {
-  
-  Serial.begin(9600);    // initialize serial communications at 9600 bps:
-  Wire.begin();          
-  
+  Serial.begin(9600);                 // initialize serial communications at 9600 bps:
   pinMode(TRANSMIT_LED, OUTPUT);
   total_bytes = strlen(text);
-  mpu.initialize();
-  if (!mpu.testConnection()) {
-    while (1);
-  }
 }
 
 void loop() {
-  // Fetch the values from Gyro sensor
-  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  int vx = map(ax, -16000, 16000, 90, -90);
-  int vy = map(ay, -16000, 16000, 90, -90);
-
-  // START LASER GESTURE - TILT TO LEFT ,then TILT TO RIGHT
-  Serial.print("WAITING FOR LEFT");
-  if (vx < -40)
-  { 
-    while(1)
-    {
-        mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-        int vx = map(ax, -16000, 16000, 90, -90);
-        int vy = map(ay, -16000, 16000, 90, -90);
-        Serial.print("WAITING FOR RIGHT");
-        Serial.print(vx);
-        Serial.print(" ");
-        Serial.println(vy);           
-        if(vx > 10)
-           break;
-    }
-    
+   
     // From here , data will be transmitted
     Serial.print("DATA SENDING MODE");
     Serial.println(start);
-    int i = 0;
+    int i = 0;                   // i denotes the number of times you want to send the data in one loop iteration
     while(i < 5)
     {
       while(transmit_data)
@@ -112,14 +47,6 @@ void loop() {
    }
     digitalWrite(TRANSMIT_LED, LOW);
  }
-  Serial.print(vx);
-  Serial.print(" ");
-  Serial.print(vy);
-  Serial.print(" -------");
-  Serial.print(angleToDistance(vx));
-  Serial.print(": ");  
-  Serial.println(angleToDistance(vy));
- 
   delay(20);
 }
 
@@ -129,9 +56,9 @@ void transmit_byte(char data_byte)
   delay(SAMPLING_TIME);
   for(int i = 0; i < 8; i++)
   {
-    digitalWrite(TRANSMIT_LED,(data_byte >> i) & 0x01); 
+    digitalWrite(TRANSMIT_LED,(data_byte >> i) & 0x01);           // modulate the laser depending upon bit
     delay(SAMPLING_TIME);
   }
-  digitalWrite(TRANSMIT_LED,HIGH);            //Return to IDLE state
+  digitalWrite(TRANSMIT_LED,HIGH);        
   delay(SAMPLING_TIME);
 }
