@@ -1,5 +1,6 @@
 # Li-Fi Project
 This repository contains code for implementing Li-Fi communication using Arduino.
+## Schematic and other important information will be released soon.
 
 ## Hardware required 
 ### Transmitter:
@@ -13,5 +14,7 @@ This repository contains code for implementing Li-Fi communication using Arduino
 ### Receiver:
 - Arduion Uno/Nano/Mini/Micro/Leonardo
 - Solar Panel
+
+
 
 
